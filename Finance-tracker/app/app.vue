@@ -3,3 +3,5 @@
     <H1>Hello world</H1>
   </div>
 </template>
+
+<script></script>
