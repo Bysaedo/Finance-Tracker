@@ -8,6 +8,21 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  // Configure PostCSS plugins through Nuxt (don't use postcss.config.cjs)
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {},
+    },
+  },
+
+  runtimeConfig: {
+    public: {
+      supabaseUrl: process.env.NUXT_SUPABASE_URL,
+      supabaseAnonKey: process.env.NUXT_SUPABASE_ANON_KEY,
+    },
+  },
+
   routeRules: {
     "/": { prerender: true },
   },
