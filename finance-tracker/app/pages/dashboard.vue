@@ -239,6 +239,15 @@
         </table>
       </div>
     </section>
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <TransactionsChart :transactions="transactions" />
+    </section>
+    <!-- Category breakdown charts -->
+    <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <ClientOnly>
+        <CategoryBreakdownChart :transactions="transactions" />
+      </ClientOnly>
+    </section>
   </div>
 </template>
 
@@ -246,6 +255,8 @@
 import { ref, computed, onMounted } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
 import { useTransactions } from "~/composables/useTransactions";
+import TransactionsChart from "~/components/TransactionsChart.vue";
+import CategoryBreakdownChart from "~/components/CategoryBreakdownChart.vue";
 
 definePageMeta({
   middleware: "auth",
@@ -297,6 +308,12 @@ const formatDate = (isoString: string) => {
   const d = new Date(isoString);
   if (Number.isNaN(d.getTime())) return isoString;
   return d.toLocaleDateString();
+};
+
+const toMiddayISO = (value: string) => {
+  const [year, month, day] = value.split("-").map(Number);
+  const d = new Date(year, month - 1, day, 12, 0, 0);
+  return d.toISOString();
 };
 
 const categories = computed(() => {
@@ -362,9 +379,7 @@ const handleAddTransaction = async () => {
       type: typeInput.value,
       category: categoryInput.value.trim() || undefined,
       description: descriptionInput.value.trim() || undefined,
-      date: dateInput.value
-        ? new Date(dateInput.value).toISOString()
-        : undefined,
+      date: dateInput.value ? toMiddayISO(dateInput.value) : undefined,
     });
 
     // Clear form
