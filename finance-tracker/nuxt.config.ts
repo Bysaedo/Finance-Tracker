@@ -1,6 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
-  modules: ["@nuxt/eslint", "@nuxt/ui", "@nuxtjs/tailwindcss"],
+  modules: ["@nuxt/eslint", "@nuxt/ui"],
 
   devtools: {
     enabled: true,
@@ -8,10 +10,13 @@ export default defineNuxtConfig({
 
   css: ["~/assets/css/main.css"],
 
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
   // Configure PostCSS plugins through Nuxt (don't use postcss.config.cjs)
   postcss: {
     plugins: {
-      tailwindcss: {},
       autoprefixer: {},
     },
   },

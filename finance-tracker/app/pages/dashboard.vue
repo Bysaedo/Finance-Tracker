@@ -16,8 +16,12 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from "vue";
 import { useAuthUser } from "~/composables/useAuthUser";
 
+definePageMeta({
+  middleware: "auth",
+});
 const { user, logout, fetchUser } = useAuthUser();
 
 onMounted(async () => {
