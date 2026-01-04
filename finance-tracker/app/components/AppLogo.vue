@@ -1,3 +1,4 @@
+<!--App Logo Component -->
 <template>
   <svg
     width="1020"

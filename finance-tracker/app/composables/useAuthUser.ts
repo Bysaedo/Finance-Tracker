@@ -1,4 +1,4 @@
-// app/composables/useAuthUser.ts
+// Centralizes authentication user state management and behavior for the application. Stores the current authenticated user globally, fetches the logged-in user from Supabase, logs the user our and redirects them when logging out.
 import type { User } from "@supabase/supabase-js";
 import { navigateTo, useState } from "#imports";
 import { useSupabaseClient } from "~/composables/useSupabaseClient";

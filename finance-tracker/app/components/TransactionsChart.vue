@@ -1,3 +1,4 @@
+<!--Receives an array of transactions as a prop, groups them by month, sums income vs expenses per month and displays a bar chart using Chart.js via vue-chartjs.-->
 <template>
   <div class="space-y-2">
     <h2 class="text-lg font-semibold">Overview</h2>
@@ -28,9 +29,10 @@ import {
   Legend,
 } from "chart.js";
 
-// Register Chart.js components once
+// Register Chart.js components
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
+// Define the Transaction type
 type Transaction = {
   id: string;
   amount: number;
@@ -43,7 +45,7 @@ const props = defineProps<{
   transactions: Transaction[];
 }>();
 
-// Build monthly labels like ["Jan 2025", "Feb 2025", ...]
+// Compute chart data
 const chartData = computed(() => {
   if (!props.transactions?.length) {
     return {
@@ -52,7 +54,6 @@ const chartData = computed(() => {
     };
   }
 
-  // Map "YYYY-MM" -> { income: number, expense: number }
   const monthlyMap = new Map<string, { income: number; expense: number }>();
 
   for (const tx of props.transactions) {
@@ -98,12 +99,12 @@ const chartData = computed(() => {
       {
         label: "Income",
         data: incomeData,
-        backgroundColor: "rgba(34, 197, 94, 0.7)", // emerald-500-ish
+        backgroundColor: "rgba(34, 197, 94, 0.7)",
       },
       {
         label: "Expenses",
         data: expenseData,
-        backgroundColor: "rgba(248, 113, 113, 0.7)", // red-400-ish
+        backgroundColor: "rgba(248, 113, 113, 0.7)",
       },
     ],
   };
@@ -141,7 +142,6 @@ const chartOptions = {
 </script>
 
 <style scoped>
-/* Give the chart some height */
 div[role="img"],
 canvas {
   max-height: 260px;

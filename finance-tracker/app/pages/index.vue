@@ -1,3 +1,4 @@
+<!--Authentication page. Users can create an account, log in with email and password and automatically redirect to dashboard if already logged in.-->
 <template>
   <div class="mx-auto max-w-md space-y-6">
     <div class="space-y-2">

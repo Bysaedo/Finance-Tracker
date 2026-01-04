@@ -87,7 +87,7 @@ export const useTransactions = () => {
     if (err) throw err;
 
     const idx = transactions.value.findIndex((t) => t.id === id);
-    if (idx !== -1) {
+    if (idx !== -1 && data) {
       transactions.value[idx] = data as Transaction;
     }
   };

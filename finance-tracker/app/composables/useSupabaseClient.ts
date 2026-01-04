@@ -1,4 +1,4 @@
-// app/composables/useSupabaseClient.ts
+// Defines how the app connects to Supabase and ensures only one Supabase client instance for the frontend. Reads Supabase credentials from runtime config. Creates a Supabase client only once. Enables persistent login and token refreshing. Returns the same client.
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { useRuntimeConfig } from "#imports";
 

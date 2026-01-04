@@ -1,3 +1,4 @@
+<!--This component takes a list of transactions as a prop, splits them into income and expenses, groups each side by category, renders two doughnut charts: one for expenses by category and one for income by category.-->
 <template>
   <div class="space-y-4">
     <h2 class="text-lg font-semibold">By category</h2>
@@ -42,6 +43,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// Define the Transaction type
 type Transaction = {
   id: string;
   amount: number;
@@ -68,6 +70,7 @@ const colors = [
   "#f97373", // soft red
 ];
 
+//Creates a map from category to total amount.
 const buildCategoryData = (type: "income" | "expense") => {
   const map = new Map<string, number>();
 
@@ -99,9 +102,11 @@ const buildCategoryData = (type: "income" | "expense") => {
   };
 };
 
+//Reactive computed properties for expense and income data. Whenever props.transactions changes, these will automatically recalculate.
 const expenseData = computed(() => buildCategoryData("expense"));
 const incomeData = computed(() => buildCategoryData("income"));
 
+//Makes chart responsive to conatainer size.
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
