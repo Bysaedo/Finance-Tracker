@@ -32,6 +32,10 @@ export default defineNuxtConfig({
     "/": { prerender: true },
   },
 
+  nitro: {
+    preset: "vercel",
+  },
+
   compatibilityDate: "2025-01-15",
 
   eslint: {
