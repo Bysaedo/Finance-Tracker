@@ -1,3 +1,5 @@
+Live Demo: https://financetracker-two-mu.vercel.app
+
 Personal Finance Tracker (Nuxt, Vue, Supabase, TypeScript)
 
 A full-stack personal finance tracking application that allows users to securely log income and expenses, categorize transactions, visualize financial history, and analyze spending trends over time.
