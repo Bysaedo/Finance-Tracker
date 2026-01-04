@@ -19,8 +19,33 @@
         </button>
       </div>
     </header>
+    <!-- Summary cards -->
+    <section class="grid gap-4 sm:grid-cols-3">
+      <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-medium text-slate-500">Total Income</p>
+        <p class="mt-2 text-xl font-semibold text-emerald-600">
+          {{ formatAmount(totalIncome) }}
+        </p>
+      </div>
+      <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-medium text-slate-500">Total expenses</p>
+        <p class="mt-2 text-xl font-semibold text-red-600">
+          -{{ formatAmount(totalExpenses) }}
+        </p>
+      </div>
+      <div class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+        <p class="text-xs font-medium text-slate-500">Net balance</p>
+        <p
+          class="mt-2 text-xl font-semibold"
+          :class="netBalance >= 0 ? 'text-emerald-600' : 'text-red-600'"
+        >
+          {{ netBalance >= 0 ? "+" : "-" }}
+          {{ formatAmount(Math.abs(netBalance)) }}
+        </p>
+      </div>
+    </section>
 
-    <!-- Add transaction form -->
+    <!-- Transaction form -->
     <section
       class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm space-y-4"
     >
@@ -112,6 +137,18 @@
         >
           <!-- Left side: Filters -->
           <div class="flex flex-wrap gap-3">
+            <!-- Period filter -->
+            <div class="flex items-center gap-2">
+              <span class="font-medium">Period:</span>
+              <select
+                v-model="period"
+                class="rounded-md border border-slate-300 px-2 py-1 text-xs shadow-sm focus:border-sky-500 focus:outline-none focus-ring-1 focus:ring-sky-500 md-text-sm"
+              >
+                <option value="month">This month</option>
+                <option value="year">This year</option>
+                <option value="all">All time</option>
+              </select>
+            </div>
             <!-- Type filter -->
             <div class="flex items-center gap-2">
               <span class="font-medium">Type:</span>
@@ -240,12 +277,12 @@
       </div>
     </section>
     <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <TransactionsChart :transactions="transactions" />
+      <TransactionsChart :transactions="periodFilteredTransactions" />
     </section>
     <!-- Category breakdown charts -->
     <section class="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <ClientOnly>
-        <CategoryBreakdownChart :transactions="transactions" />
+        <CategoryBreakdownChart :transactions="periodFilteredTransactions" />
       </ClientOnly>
     </section>
   </div>
@@ -283,6 +320,7 @@ const filterType = ref<"all" | "income" | "expense">("all");
 const filterCategory = ref<string>("all");
 const sortBy = ref<"date" | "amount">("date");
 const sortDirection = ref<"asc" | "desc">("desc");
+const period = ref<"month" | "year" | "all">("all");
 
 const balance = computed(() =>
   transactions.value.reduce((sum, tx) => {
@@ -318,7 +356,7 @@ const toMiddayISO = (value: string) => {
 
 const categories = computed(() => {
   const set = new Set<string>();
-  transactions.value.forEach((tx) => {
+  periodFilteredTransactions.value.forEach((tx) => {
     if (tx.category) {
       set.add(tx.category);
     }
@@ -326,8 +364,33 @@ const categories = computed(() => {
   return Array.from(set).sort((a, b) => a.localeCompare(b));
 });
 
+const periodFilteredTransactions = computed(() => {
+  if (period.value === "all") {
+    return transactions.value;
+  }
+
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+
+  return transactions.value.filter((tx) => {
+    if (!tx.date) return false;
+    const d = new Date(tx.date);
+    if (Number.isNaN(d.getTime())) return false;
+
+    if (period.value === "month") {
+      return d.getFullYear() === currentYear && d.getMonth() === currentMonth;
+    }
+
+    if (period.value === "year") {
+      return d.getFullYear() === currentYear;
+    }
+    return true;
+  });
+});
+
 const filteredTransactions = computed(() =>
-  transactions.value.filter((tx) => {
+  periodFilteredTransactions.value.filter((tx) => {
     if (filterType.value !== "all" && tx.type !== filterType.value) {
       return false;
     }
@@ -340,6 +403,22 @@ const filteredTransactions = computed(() =>
     return true;
   })
 );
+
+const totalIncome = computed(() =>
+  periodFilteredTransactions.value.reduce((sum, tx) => {
+    const amt = Number(tx.amount) || 0;
+    return tx.type === "income" ? sum + amt : sum;
+  }, 0)
+);
+
+const totalExpenses = computed(() =>
+  periodFilteredTransactions.value.reduce((sum, tx) => {
+    const amt = Number(tx.amount) || 0;
+    return tx.type === "expense" ? sum + amt : sum;
+  }, 0)
+);
+
+const netBalance = computed(() => totalIncome.value - totalExpenses.value);
 
 const visibleTransactions = computed(() => {
   const list = [...filteredTransactions.value];
