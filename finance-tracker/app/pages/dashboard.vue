@@ -1,4 +1,4 @@
-<!--Authenticated dashboard page. Makes sure the user is logged in. Fetches that user's transactions from Supabase. Lets the user add and delete transactions. Computes totals, filters, sorting and period (month/year/all time). Shows: summary cards, transaction list, chart, and form to add new transactions.-->
+<!--Authenticated dashboard page. Makes sure the user is logged in. Fetches that user's transactions from Supabase. Lets the user add and delete transactions. Computes totals, filters, sorting and period (month/year/all time). Shows: summary cards, transaction list, chart, and form to add new transactions-->
 <template>
   <div class="mx-auto max-w-4xl space-y-6">
     <!-- Header -->
